@@ -443,14 +443,21 @@ Date Range: Jan 1 – Mar 31, 2025
 Impressions: 412,000
 Clicks: 18,540
 CTR: 4.5%
-Spend: $9,200
+Spend: ₹9,200
 Conversions: 344
-CPA: $26.74
+CPA: ₹26.74
 ROAS: 4.2x
-Revenue: $38,640
+Revenue: ₹38,640
 
 Feel free to paste any format — messy is fine."
         ></textarea>
+      </div>
+
+      <div class="section-label">Ad Platform</div>
+      <div class="options-row" id="platform-chips">
+        <button class="chip active" data-platform="both">Meta + Google</button>
+        <button class="chip" data-platform="meta">Meta Ads</button>
+        <button class="chip" data-platform="google">Google Ads</button>
       </div>
 
       <div class="section-label">Report Tone</div>
@@ -499,17 +506,28 @@ Feel free to paste any format — messy is fine."
   </main>
 
   <footer>
-    <span class="footer-note">Powered by Anthropic Claude · Your data is never stored</span>
+    <span class="footer-note">Powered by Google Gemini · Your data is never stored</span>
     <span class="model-badge">gemini-2.5-flash</span>
   </footer>
 
   <script>
-    // ── Tone chips ──
-    const chips = document.querySelectorAll('.chip');
-    let activeTone = 'professional';
-    chips.forEach(chip => {
+    // ── Platform chips ──
+    const platformChips = document.querySelectorAll('#platform-chips .chip');
+    let activePlatform = 'both';
+    platformChips.forEach(chip => {
       chip.addEventListener('click', () => {
-        chips.forEach(c => c.classList.remove('active'));
+        platformChips.forEach(c => c.classList.remove('active'));
+        chip.classList.add('active');
+        activePlatform = chip.dataset.platform;
+      });
+    });
+
+    // ── Tone chips ──
+    const toneChips = document.querySelectorAll('#tone-chips .chip');
+    let activeTone = 'professional';
+    toneChips.forEach(chip => {
+      chip.addEventListener('click', () => {
+        toneChips.forEach(c => c.classList.remove('active'));
         chip.classList.add('active');
         activeTone = chip.dataset.tone;
       });
@@ -517,10 +535,68 @@ Feel free to paste any format — messy is fine."
 
     // ── Tone prompt map ──
     const tonePrompts = {
-      professional:  "Write in a professional, clear, and confident tone suited for a marketing agency presenting to a client.",
-      executive:     "Write a tight executive summary — lead with the most important KPIs and business impact. Be brief and decisive.",
-      detailed:      "Write a thorough analytical report with observations, channel-level breakdowns, trends, and specific recommendations.",
-      casual:        "Write in a friendly, conversational tone — like a knowledgeable colleague walking the client through the results."
+      professional: {
+        style: `Write in a professional, client-facing tone. Use complete sentences and formal language.
+Be direct about both wins and underperformance. The reader is a marketing manager who understands
+ad metrics but wants clear interpretation, not raw numbers alone.`,
+        sections: `Structure the report with these exact sections:
+- **Campaign Overview** — platform(s), campaign goal, date range, total spend
+- **Key Performance Highlights** — 3–5 standout metrics with context (e.g. "CTR of 2.4% is above the Meta average of 1.9%")
+- **Performance Analysis** — interpret what the numbers mean. Flag what worked, what underperformed, and why
+- **Recommendations** — exactly 3 concrete, actionable next steps with reasoning
+- **Conclusion** — 2–3 sentences summarising the overall campaign health`,
+        maxTokens: 1200
+      },
+      executive: {
+        style: `Write as if briefing a busy CEO or business owner who has 60 seconds to read this.
+Lead with the most important insight. No jargon. Translate every metric into business impact
+(revenue, ROI, cost per customer). Be blunt about what's working and what isn't.`,
+        sections: `Structure the report with these exact sections:
+- **Bottom Line** — one paragraph: did this campaign deliver value? Yes or no, and why
+- **3 Numbers That Matter** — pick the 3 most business-critical metrics and explain each in plain English
+- **What To Do Next** — 2 decisions the executive should make, written as clear action items
+- **Risk / Opportunity** — one thing that needs attention and one thing worth doubling down on`,
+        maxTokens: 700
+      },
+      detailed: {
+        style: `Write as a senior performance analyst preparing an internal review. Be thorough and technical.
+Show your reasoning. Reference industry benchmarks where relevant. The reader is a media buyer or
+digital strategist who wants depth, not summaries.`,
+        sections: `Structure the report with these exact sections:
+- **Campaign Overview** — all campaign parameters: platform, objective, audience, spend, date range
+- **Metric-by-Metric Breakdown** — analyse each metric individually: impressions, reach, CTR, CPC, CPM, conversions, CPA, ROAS (use only what's provided)
+- **Funnel Analysis** — trace the user journey from impression → click → conversion. Identify where drop-off occurs
+- **Benchmark Comparison** — compare key metrics against typical industry ranges (Meta CTR: 0.9–2.5%, Google Search CTR: 3–6%, average CPA varies by industry)
+- **Performance Drivers** — what likely caused the results (creative, audience, bidding, landing page)
+- **Optimisation Recommendations** — 4–5 specific, technical recommendations with expected impact
+- **Conclusion** — overall assessment with a performance framing (strong / average / needs work)`,
+        maxTokens: 1800
+      },
+      casual: {
+        style: `Write like a knowledgeable friend explaining results over a coffee. Warm, encouraging,
+but honest. Use simple language — no jargon unless you explain it. Celebrate wins genuinely.
+Frame problems as opportunities. The reader is a small business owner or junior marketer.`,
+        sections: `Structure the report with these exact sections:
+- **How Did It Go?** — a friendly 2–3 sentence overview of the campaign
+- **The Wins** — what went well, explained simply with the relevant numbers
+- **What We Can Improve** — honest but encouraging — what to fix and why it matters
+- **Our Top Recommendations** — 3 suggestions written as friendly advice, not corporate directives
+- **Wrapping Up** — a short, positive closing that motivates action`,
+        maxTokens: 1000
+      }
+    };
+
+    // ── Platform context map ──
+    const platformContext = {
+      meta: `This is a Meta Ads (Facebook/Instagram) campaign. Relevant benchmarks: average CTR 0.9–2.5%,
+average CPM ₹200–600 (India), average CPC ₹5–25, good ROAS for ecommerce is 3x+.`,
+      google: `This is a Google Ads campaign. Relevant benchmarks: Search CTR 3–6%, Display CTR 0.1–0.5%,
+average CPC varies widely by keyword competition, good conversion rate is 2–4% for Search.`,
+      both: `This report covers both Meta Ads and Google Ads. Where possible, compare platform performance
+against each other and against their respective benchmarks. Note that these platforms serve different
+funnel stages — Google captures existing demand, Meta creates new demand.
+Meta benchmarks: CTR 0.9–2.5%, CPM ₹200–600, CPC ₹5–25.
+Google benchmarks: Search CTR 3–6%, Display CTR 0.1–0.5%, conversion rate 2–4%.`
     };
 
     // ── Generate ──
@@ -544,20 +620,30 @@ Feel free to paste any format — messy is fine."
       emptyState.style.display = 'none';
       reportOutput.style.display = 'flex';
       reportText.innerHTML = '<span class="cursor"></span>';
-      document.getElementById('report-timestamp').textContent = new Date().toLocaleString('en-US', {month:'short', day:'numeric', year:'numeric', hour:'2-digit', minute:'2-digit'});
+      document.getElementById('report-timestamp').textContent = new Date().toLocaleString('en-IN', {month:'short', day:'numeric', year:'numeric', hour:'2-digit', minute:'2-digit'});
 
-      const systemPrompt = `You are an expert digital marketing analyst working for a top-tier agency. ${tonePrompts[activeTone]}
+      const tone = tonePrompts[activeTone];
 
-Structure your report clearly with these sections where applicable:
-- **Campaign Overview** — summarize what was run
-- **Key Performance Highlights** — the standout numbers
-- **Performance Analysis** — what the metrics tell us (good and bad)
-- **Recommendations** — 2–4 concrete next steps
-- **Conclusion** — a brief closing statement
+      const systemPrompt = `You are an expert digital marketing analyst writing a client-facing campaign performance report for an Indian marketing agency.
 
-Use markdown-style bold for section headers (**Header**). Be specific with numbers. Do not invent data — only use what is provided.`;
+TONE AND STYLE:
+${tone.style}
 
-      const userPrompt = `Here is the raw campaign data:\n\n${rawData}\n\nGenerate a client-ready report.`;
+PLATFORM CONTEXT:
+${platformContext[activePlatform]}
+
+REPORT STRUCTURE:
+${tone.sections}
+
+STRICT RULES:
+- Never invent or estimate data. Only use the numbers the user has provided.
+- Always interpret numbers in context — a raw metric means nothing without meaning attached to it.
+- If a metric is missing, skip that section gracefully rather than saying "data not provided".
+- Use **bold** for all section headers.
+- Use ₹ for currency if spend is given in rupees, otherwise match the currency in the data.
+- End every report with a single line: "— Report generated by AgencyReport AI"`;
+
+      const userPrompt = `Please generate a campaign performance report using the following data:\n\n${rawData}`;
 
       try {
         const response = await fetch("/api/generate", {
@@ -565,7 +651,8 @@ Use markdown-style bold for section headers (**Header**). Be specific with numbe
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
             system: systemPrompt,
-            prompt: userPrompt
+            prompt: userPrompt,
+            maxTokens: tone.maxTokens
           })
         });
 
@@ -617,10 +704,11 @@ Use markdown-style bold for section headers (**Header**). Be specific with numbe
       }
     }
 
-    // ── Format report text (bold headers) ──
+    // ── Format report text (bold headers, bullet points) ──
     function formatReport(text) {
       return text
         .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
+        .replace(/^- (.+)$/gm, '&nbsp;&nbsp;• $1')
         .replace(/\n/g, '<br>');
     }
 
