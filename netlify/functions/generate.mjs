@@ -21,7 +21,8 @@ export default async (req) => {
     });
   }
 
-  const { system, prompt } = body;
+  // Read all three fields — maxTokens is now passed from the frontend per tone
+  const { system, prompt, maxTokens } = body;
 
   // Build Gemini request
   const geminiPayload = {
@@ -35,8 +36,11 @@ export default async (req) => {
       },
     ],
     generationConfig: {
-      maxOutputTokens: 1500,
-      temperature: 0.7,
+      // Use the per-tone token limit from the frontend; fall back to 1500 if missing
+      maxOutputTokens: maxTokens || 1500,
+      // Low temperature = factual and disciplined. Higher values cause the model
+      // to "helpfully" calculate metrics the user never provided.
+      temperature: 0.2,
     },
   };
 
