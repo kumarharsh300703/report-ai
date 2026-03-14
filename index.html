@@ -1,0 +1,650 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ReportAI — Campaign Intelligence</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Mono:wght@400;500&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet" />
+
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --ink:       #0d0d0d;
+      --paper:     #f5f2eb;
+      --cream:     #ede9df;
+      --rule:      #c8c2b4;
+      --accent:    #c84b2f;
+      --accent2:   #2f6bc8;
+      --muted:     #7a7468;
+      --mono-bg:   #1a1814;
+      --mono-text: #e8e2d8;
+      --radius:    4px;
+    }
+
+    html { font-size: 16px; }
+
+    body {
+      background: var(--paper);
+      color: var(--ink);
+      font-family: 'DM Sans', sans-serif;
+      font-weight: 300;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* ── Noise texture overlay ── */
+    body::before {
+      content: '';
+      position: fixed; inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    /* ── Header ── */
+    header {
+      position: relative;
+      z-index: 1;
+      border-bottom: 1px solid var(--rule);
+      padding: 18px 40px;
+      display: flex;
+      align-items: baseline;
+      gap: 16px;
+    }
+
+    .logo {
+      font-family: 'DM Serif Display', serif;
+      font-size: 1.5rem;
+      letter-spacing: -0.02em;
+      color: var(--ink);
+    }
+
+    .logo span {
+      color: var(--accent);
+      font-style: italic;
+    }
+
+    .tagline {
+      font-size: 0.78rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-left: auto;
+      font-weight: 400;
+    }
+
+    /* ── Main layout ── */
+    main {
+      position: relative;
+      z-index: 1;
+      flex: 1;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0;
+      max-width: 1400px;
+      width: 100%;
+      margin: 0 auto;
+      padding: 0;
+    }
+
+    /* ── Left panel ── */
+    .panel-left {
+      padding: 48px 40px 48px 40px;
+      border-right: 1px solid var(--rule);
+      display: flex;
+      flex-direction: column;
+      gap: 28px;
+    }
+
+    .section-label {
+      font-size: 0.7rem;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--muted);
+      font-weight: 500;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .section-label::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: var(--rule);
+    }
+
+    h1 {
+      font-family: 'DM Serif Display', serif;
+      font-size: 2.6rem;
+      line-height: 1.1;
+      letter-spacing: -0.03em;
+      color: var(--ink);
+    }
+
+    h1 em {
+      font-style: italic;
+      color: var(--accent);
+    }
+
+    .description {
+      font-size: 0.95rem;
+      line-height: 1.65;
+      color: var(--muted);
+      max-width: 400px;
+    }
+
+    /* ── Textarea ── */
+    .input-block {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      flex: 1;
+    }
+
+    textarea {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.82rem;
+      line-height: 1.7;
+      color: var(--mono-text);
+      background: var(--mono-bg);
+      border: 1px solid #333;
+      border-radius: var(--radius);
+      padding: 20px 22px;
+      resize: vertical;
+      min-height: 280px;
+      flex: 1;
+      outline: none;
+      transition: border-color 0.2s;
+      caret-color: var(--accent);
+    }
+
+    textarea::placeholder { color: #5a5550; }
+
+    textarea:focus { border-color: var(--accent); }
+
+    /* ── Options row ── */
+    .options-row {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .chip {
+      font-size: 0.75rem;
+      letter-spacing: 0.05em;
+      padding: 6px 14px;
+      border: 1px solid var(--rule);
+      border-radius: 99px;
+      cursor: pointer;
+      color: var(--muted);
+      background: transparent;
+      transition: all 0.15s;
+      font-family: 'DM Sans', sans-serif;
+      font-weight: 400;
+    }
+
+    .chip:hover, .chip.active {
+      background: var(--ink);
+      color: var(--paper);
+      border-color: var(--ink);
+    }
+
+    /* ── Button ── */
+    .btn-generate {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.88rem;
+      font-weight: 500;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--paper);
+      background: var(--ink);
+      border: none;
+      border-radius: var(--radius);
+      padding: 16px 28px;
+      cursor: pointer;
+      transition: background 0.2s, transform 0.1s;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .btn-generate:hover { background: #222; }
+    .btn-generate:active { transform: scale(0.98); }
+
+    .btn-generate:disabled {
+      background: var(--rule);
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    .btn-generate .arrow {
+      transition: transform 0.2s;
+    }
+    .btn-generate:not(:disabled):hover .arrow {
+      transform: translateX(4px);
+    }
+
+    /* Spinner */
+    .spinner {
+      width: 16px; height: 16px;
+      border: 2px solid rgba(255,255,255,0.3);
+      border-top-color: white;
+      border-radius: 50%;
+      animation: spin 0.7s linear infinite;
+      display: none;
+    }
+    .btn-generate.loading .spinner { display: block; }
+    .btn-generate.loading .btn-text,
+    .btn-generate.loading .arrow { display: none; }
+
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* ── Right panel ── */
+    .panel-right {
+      padding: 48px 40px;
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+    }
+
+    /* ── Output ── */
+    #output-wrap {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .output-empty {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 16px;
+      color: var(--rule);
+      text-align: center;
+      padding: 40px;
+      border: 1px dashed var(--rule);
+      border-radius: var(--radius);
+    }
+
+    .output-empty .empty-icon {
+      font-size: 2.5rem;
+      opacity: 0.5;
+    }
+
+    .output-empty p {
+      font-size: 0.85rem;
+      color: var(--muted);
+      max-width: 260px;
+      line-height: 1.6;
+    }
+
+    #report-output {
+      display: none;
+      flex-direction: column;
+      gap: 0;
+      animation: fadeUp 0.4s ease both;
+    }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(12px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Report header bar */
+    .report-header {
+      background: var(--ink);
+      color: var(--paper);
+      padding: 18px 24px;
+      border-radius: var(--radius) var(--radius) 0 0;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .report-header .report-title {
+      font-family: 'DM Serif Display', serif;
+      font-size: 1rem;
+      letter-spacing: -0.01em;
+    }
+
+    .report-header .report-meta {
+      font-size: 0.72rem;
+      color: rgba(255,255,255,0.45);
+      font-family: 'DM Mono', monospace;
+    }
+
+    .copy-btn {
+      background: rgba(255,255,255,0.08);
+      border: 1px solid rgba(255,255,255,0.15);
+      color: rgba(255,255,255,0.7);
+      padding: 5px 12px;
+      font-size: 0.72rem;
+      border-radius: var(--radius);
+      cursor: pointer;
+      font-family: 'DM Sans', sans-serif;
+      transition: all 0.15s;
+    }
+    .copy-btn:hover { background: rgba(255,255,255,0.16); color: white; }
+
+    /* Report body */
+    .report-body {
+      background: var(--cream);
+      border: 1px solid var(--rule);
+      border-top: none;
+      border-radius: 0 0 var(--radius) var(--radius);
+      padding: 28px 28px;
+      font-size: 0.92rem;
+      line-height: 1.75;
+      color: var(--ink);
+      white-space: pre-wrap;
+      word-break: break-word;
+      max-height: 520px;
+      overflow-y: auto;
+    }
+
+    /* Streaming cursor */
+    .cursor {
+      display: inline-block;
+      width: 2px;
+      height: 1em;
+      background: var(--accent);
+      vertical-align: text-bottom;
+      margin-left: 2px;
+      animation: blink 0.9s step-end infinite;
+    }
+
+    @keyframes blink { 50% { opacity: 0; } }
+
+    /* ── Error state ── */
+    .error-banner {
+      display: none;
+      background: #fdf0ed;
+      border: 1px solid #e8b5aa;
+      color: #7a2a1e;
+      padding: 14px 18px;
+      border-radius: var(--radius);
+      font-size: 0.85rem;
+      line-height: 1.5;
+    }
+
+    /* ── Footer ── */
+    footer {
+      position: relative; z-index: 1;
+      border-top: 1px solid var(--rule);
+      padding: 14px 40px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .footer-note {
+      font-size: 0.72rem;
+      color: var(--muted);
+      letter-spacing: 0.04em;
+    }
+
+    .model-badge {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.7rem;
+      color: var(--muted);
+      background: var(--cream);
+      border: 1px solid var(--rule);
+      padding: 3px 9px;
+      border-radius: 99px;
+    }
+
+    /* ── Responsive ── */
+    @media (max-width: 900px) {
+      main { grid-template-columns: 1fr; }
+      .panel-left { border-right: none; border-bottom: 1px solid var(--rule); }
+      header { padding: 16px 24px; }
+      .panel-left, .panel-right { padding: 32px 24px; }
+      footer { padding: 14px 24px; }
+      h1 { font-size: 2rem; }
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <div class="logo">Report<span>AI</span></div>
+    <div class="tagline">Campaign Intelligence</div>
+  </header>
+
+  <main>
+    <!-- LEFT: Input -->
+    <section class="panel-left">
+      <div class="section-label">Input</div>
+
+      <h1>Turn raw numbers into<br><em>client-ready</em> reports.</h1>
+
+      <p class="description">
+        Paste your campaign metrics below — impressions, clicks, spend, conversions, ROAS, anything you have. The AI will analyze and write a polished report your clients will love.
+      </p>
+
+      <div class="input-block">
+        <div class="section-label">Raw Campaign Data</div>
+        <textarea
+          id="raw-data"
+          placeholder="Paste your numbers here. For example:
+
+Campaign: Q1 Google Ads — Brand Search
+Date Range: Jan 1 – Mar 31, 2025
+Impressions: 412,000
+Clicks: 18,540
+CTR: 4.5%
+Spend: $9,200
+Conversions: 344
+CPA: $26.74
+ROAS: 4.2x
+Revenue: $38,640
+
+Feel free to paste any format — messy is fine."
+        ></textarea>
+      </div>
+
+      <div class="section-label">Report Tone</div>
+      <div class="options-row" id="tone-chips">
+        <button class="chip active" data-tone="professional">Professional</button>
+        <button class="chip" data-tone="executive">Executive Summary</button>
+        <button class="chip" data-tone="detailed">Detailed Analysis</button>
+        <button class="chip" data-tone="casual">Casual / Friendly</button>
+      </div>
+
+      <button class="btn-generate" id="generate-btn" onclick="generateReport()">
+        <span class="spinner"></span>
+        <span class="btn-text">Generate Report</span>
+        <svg class="arrow" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M17 8l4 4m0 0l-4 4m4-4H3"/>
+        </svg>
+      </button>
+
+    </section>
+
+    <!-- RIGHT: Output -->
+    <section class="panel-right">
+      <div class="section-label">Report Output</div>
+
+      <div id="error-banner" class="error-banner"></div>
+
+      <div id="output-wrap">
+        <div class="output-empty" id="empty-state">
+          <div class="empty-icon">📊</div>
+          <p>Your generated report will appear here. Paste your data and click Generate.</p>
+        </div>
+
+        <div id="report-output">
+          <div class="report-header">
+            <div class="report-title">Campaign Report</div>
+            <div style="display:flex;gap:10px;align-items:center;">
+              <span class="report-meta" id="report-timestamp"></span>
+              <button class="copy-btn" onclick="copyReport()">Copy</button>
+            </div>
+          </div>
+          <div class="report-body" id="report-text"></div>
+        </div>
+      </div>
+
+    </section>
+  </main>
+
+  <footer>
+    <span class="footer-note">Powered by Anthropic Claude · Your data is never stored</span>
+    <span class="model-badge">gemini-2.0-flash</span>
+  </footer>
+
+  <script>
+    // ── Tone chips ──
+    const chips = document.querySelectorAll('.chip');
+    let activeTone = 'professional';
+    chips.forEach(chip => {
+      chip.addEventListener('click', () => {
+        chips.forEach(c => c.classList.remove('active'));
+        chip.classList.add('active');
+        activeTone = chip.dataset.tone;
+      });
+    });
+
+    // ── Tone prompt map ──
+    const tonePrompts = {
+      professional:  "Write in a professional, clear, and confident tone suited for a marketing agency presenting to a client.",
+      executive:     "Write a tight executive summary — lead with the most important KPIs and business impact. Be brief and decisive.",
+      detailed:      "Write a thorough analytical report with observations, channel-level breakdowns, trends, and specific recommendations.",
+      casual:        "Write in a friendly, conversational tone — like a knowledgeable colleague walking the client through the results."
+    };
+
+    // ── Generate ──
+    async function generateReport() {
+      const rawData = document.getElementById('raw-data').value.trim();
+      if (!rawData) {
+        showError("Please paste some campaign data before generating a report.");
+        return;
+      }
+
+      const btn = document.getElementById('generate-btn');
+      const emptyState = document.getElementById('empty-state');
+      const reportOutput = document.getElementById('report-output');
+      const reportText = document.getElementById('report-text');
+      const errorBanner = document.getElementById('error-banner');
+
+      // Reset state
+      errorBanner.style.display = 'none';
+      btn.classList.add('loading');
+      btn.disabled = true;
+      emptyState.style.display = 'none';
+      reportOutput.style.display = 'flex';
+      reportText.innerHTML = '<span class="cursor"></span>';
+      document.getElementById('report-timestamp').textContent = new Date().toLocaleString('en-US', {month:'short', day:'numeric', year:'numeric', hour:'2-digit', minute:'2-digit'});
+
+      const systemPrompt = `You are an expert digital marketing analyst working for a top-tier agency. ${tonePrompts[activeTone]}
+
+Structure your report clearly with these sections where applicable:
+- **Campaign Overview** — summarize what was run
+- **Key Performance Highlights** — the standout numbers
+- **Performance Analysis** — what the metrics tell us (good and bad)
+- **Recommendations** — 2–4 concrete next steps
+- **Conclusion** — a brief closing statement
+
+Use markdown-style bold for section headers (**Header**). Be specific with numbers. Do not invent data — only use what is provided.`;
+
+      const userPrompt = `Here is the raw campaign data:\n\n${rawData}\n\nGenerate a client-ready report.`;
+
+      try {
+        const response = await fetch("/api/generate", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            system: systemPrompt,
+            prompt: userPrompt
+          })
+        });
+
+        if (!response.ok) {
+          const err = await response.json().catch(() => ({}));
+          throw new Error(err.error?.message || `API error ${response.status}`);
+        }
+
+        // Stream the response
+        let fullText = '';
+        const reader = response.body.getReader();
+        const decoder = new TextDecoder();
+        let buffer = '';
+
+        while (true) {
+          const { done, value } = await reader.read();
+          if (done) break;
+
+          buffer += decoder.decode(value, { stream: true });
+          const lines = buffer.split('\n');
+          buffer = lines.pop();
+
+          for (const line of lines) {
+            if (!line.startsWith('data: ')) continue;
+            const data = line.slice(6).trim();
+            if (data === '[DONE]') continue;
+            try {
+              const parsed = JSON.parse(data);
+              const chunk = parsed.candidates?.[0]?.content?.parts?.[0]?.text;
+              if (chunk) {
+                fullText += chunk;
+                reportText.innerHTML = formatReport(fullText) + '<span class="cursor"></span>';
+                reportText.scrollTop = reportText.scrollHeight;
+              }
+            } catch (_) {}
+          }
+        }
+
+        // Final render, no cursor
+        reportText.innerHTML = formatReport(fullText);
+
+      } catch (err) {
+        reportOutput.style.display = 'none';
+        emptyState.style.display = 'flex';
+        showError("Something went wrong: " + err.message);
+      } finally {
+        btn.classList.remove('loading');
+        btn.disabled = false;
+      }
+    }
+
+    // ── Format report text (bold headers) ──
+    function formatReport(text) {
+      return text
+        .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
+        .replace(/\n/g, '<br>');
+    }
+
+    // ── Copy ──
+    function copyReport() {
+      const text = document.getElementById('report-text').innerText;
+      navigator.clipboard.writeText(text).then(() => {
+        const btn = document.querySelector('.copy-btn');
+        btn.textContent = 'Copied!';
+        setTimeout(() => btn.textContent = 'Copy', 1800);
+      });
+    }
+
+    // ── Error banner ──
+    function showError(msg) {
+      const banner = document.getElementById('error-banner');
+      banner.textContent = msg;
+      banner.style.display = 'block';
+    }
+
+    // ── Enter key shortcut (Ctrl/Cmd + Enter) ──
+    document.getElementById('raw-data').addEventListener('keydown', e => {
+      if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') generateReport();
+    });
+  </script>
+</body>
+</html>
