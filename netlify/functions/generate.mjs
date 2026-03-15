@@ -24,7 +24,13 @@ export default async (req) => {
   // Read all three fields — maxTokens is now passed from the frontend per tone
   const { system, prompt, maxTokens } = body;
 
-  // Build Gemini request
+  // gemini-2.5-flash is a thinking model — it uses tokens internally for reasoning
+  // before generating visible text. Without thinkingBudget, those tokens eat into
+  // your output limit and the report cuts off mid-sentence.
+  // We cap thinking at 1024 tokens and add that on top of the visible output budget.
+  const visibleTokens  = maxTokens || 1500;
+  const thinkingBudget = 1024;
+
   const geminiPayload = {
     system_instruction: {
       parts: [{ text: system }],
@@ -36,11 +42,11 @@ export default async (req) => {
       },
     ],
     generationConfig: {
-      // Use the per-tone token limit from the frontend; fall back to 1500 if missing
-      maxOutputTokens: maxTokens || 1500,
-      // Low temperature = factual and disciplined. Higher values cause the model
-      // to "helpfully" calculate metrics the user never provided.
+      maxOutputTokens: visibleTokens + thinkingBudget,
       temperature: 0.2,
+      thinkingConfig: {
+        thinkingBudget: thinkingBudget,
+      },
     },
   };
 
