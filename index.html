@@ -36,7 +36,6 @@
       flex-direction: column;
     }
 
-    /* ── Noise texture overlay ── */
     body::before {
       content: '';
       position: fixed; inset: 0;
@@ -45,10 +44,8 @@
       z-index: 0;
     }
 
-    /* ── Header ── */
     header {
-      position: relative;
-      z-index: 1;
+      position: relative; z-index: 1;
       border-bottom: 1px solid var(--rule);
       padding: 18px 40px;
       display: flex;
@@ -62,11 +59,7 @@
       letter-spacing: -0.02em;
       color: var(--ink);
     }
-
-    .logo span {
-      color: var(--accent);
-      font-style: italic;
-    }
+    .logo span { color: var(--accent); font-style: italic; }
 
     .tagline {
       font-size: 0.78rem;
@@ -77,27 +70,22 @@
       font-weight: 400;
     }
 
-    /* ── Main layout ── */
     main {
-      position: relative;
-      z-index: 1;
+      position: relative; z-index: 1;
       flex: 1;
       display: grid;
       grid-template-columns: 1fr 1fr;
-      gap: 0;
       max-width: 1400px;
       width: 100%;
       margin: 0 auto;
-      padding: 0;
     }
 
-    /* ── Left panel ── */
     .panel-left {
-      padding: 48px 40px 48px 40px;
+      padding: 48px 40px;
       border-right: 1px solid var(--rule);
       display: flex;
       flex-direction: column;
-      gap: 28px;
+      gap: 24px;
     }
 
     .section-label {
@@ -110,7 +98,6 @@
       align-items: center;
       gap: 8px;
     }
-
     .section-label::after {
       content: '';
       flex: 1;
@@ -123,13 +110,8 @@
       font-size: 2.6rem;
       line-height: 1.1;
       letter-spacing: -0.03em;
-      color: var(--ink);
     }
-
-    h1 em {
-      font-style: italic;
-      color: var(--accent);
-    }
+    h1 em { font-style: italic; color: var(--accent); }
 
     .description {
       font-size: 0.95rem;
@@ -138,7 +120,42 @@
       max-width: 400px;
     }
 
-    /* ── Textarea ── */
+    .fields-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+
+    .field-group {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .field-label {
+      font-size: 0.7rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--muted);
+      font-weight: 500;
+    }
+
+    .text-input {
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.88rem;
+      font-weight: 400;
+      color: var(--ink);
+      background: var(--cream);
+      border: 1px solid var(--rule);
+      border-radius: var(--radius);
+      padding: 10px 14px;
+      outline: none;
+      transition: border-color 0.2s;
+      width: 100%;
+    }
+    .text-input::placeholder { color: var(--rule); }
+    .text-input:focus { border-color: var(--accent); }
+
     .input-block {
       display: flex;
       flex-direction: column;
@@ -156,21 +173,194 @@
       border-radius: var(--radius);
       padding: 20px 22px;
       resize: vertical;
-      min-height: 280px;
+      min-height: 240px;
       flex: 1;
       outline: none;
       transition: border-color 0.2s;
       caret-color: var(--accent);
     }
-
     textarea::placeholder { color: #5a5550; }
-
     textarea:focus { border-color: var(--accent); }
 
-    /* ── Options row ── */
+    /* ── Input mode tabs ── */
+    .mode-tabs {
+      display: flex;
+      border: 1px solid var(--rule);
+      border-radius: var(--radius);
+      overflow: hidden;
+      flex-shrink: 0;
+    }
+    .mode-tab {
+      flex: 1;
+      padding: 8px 0;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.75rem;
+      font-weight: 500;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--muted);
+      background: transparent;
+      border: none;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+    .mode-tab.active {
+      background: var(--ink);
+      color: var(--paper);
+    }
+    .mode-tab:not(.active):hover {
+      background: var(--cream);
+    }
+
+    /* ── Upload drop zone ── */
+    .upload-zone {
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 14px;
+      min-height: 240px;
+      border: 1.5px dashed var(--rule);
+      border-radius: var(--radius);
+      cursor: pointer;
+      transition: border-color 0.2s, background 0.2s;
+      text-align: center;
+      padding: 32px 24px;
+    }
+    .upload-zone.active { display: flex; }
+    .upload-zone:hover, .upload-zone.drag-over {
+      border-color: var(--accent);
+      background: rgba(200, 75, 47, 0.03);
+    }
+    .upload-zone input[type="file"] {
+      display: none;
+    }
+    .upload-icon {
+      width: 40px; height: 40px;
+      border: 1.5px solid var(--rule);
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--muted);
+      font-size: 1.2rem;
+      transition: border-color 0.2s;
+    }
+    .upload-zone:hover .upload-icon { border-color: var(--accent); color: var(--accent); }
+    .upload-zone .upload-title {
+      font-size: 0.9rem;
+      font-weight: 500;
+      color: var(--ink);
+    }
+    .upload-zone .upload-sub {
+      font-size: 0.78rem;
+      color: var(--muted);
+      line-height: 1.5;
+    }
+    .upload-zone .upload-formats {
+      display: flex;
+      gap: 8px;
+    }
+    .format-pill {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.68rem;
+      padding: 3px 9px;
+      border: 1px solid var(--rule);
+      border-radius: 99px;
+      color: var(--muted);
+    }
+
+    /* ── File loaded state ── */
+    .file-loaded {
+      display: none;
+      flex-direction: column;
+      gap: 12px;
+    }
+    .file-loaded.active { display: flex; }
+    .file-card {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      padding: 14px 16px;
+      background: var(--cream);
+      border: 1px solid var(--rule);
+      border-radius: var(--radius);
+    }
+    .file-card-icon {
+      width: 36px; height: 36px;
+      background: var(--ink);
+      border-radius: var(--radius);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'DM Mono', monospace;
+      font-size: 0.6rem;
+      font-weight: 500;
+      color: var(--paper);
+      letter-spacing: 0.05em;
+      flex-shrink: 0;
+    }
+    .file-card-info { flex: 1; min-width: 0; }
+    .file-card-name {
+      font-size: 0.85rem;
+      font-weight: 500;
+      color: var(--ink);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .file-card-meta {
+      font-size: 0.75rem;
+      color: var(--muted);
+      margin-top: 2px;
+    }
+    .file-card-remove {
+      background: none;
+      border: none;
+      color: var(--muted);
+      cursor: pointer;
+      font-size: 1rem;
+      padding: 4px;
+      line-height: 1;
+      transition: color 0.15s;
+      flex-shrink: 0;
+    }
+    .file-card-remove:hover { color: var(--accent); }
+    .file-preview {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.76rem;
+      line-height: 1.6;
+      color: var(--mono-text);
+      background: var(--mono-bg);
+      border: 1px solid #333;
+      border-radius: var(--radius);
+      padding: 16px 18px;
+      max-height: 160px;
+      overflow-y: auto;
+      white-space: pre;
+    }
+
+    /* ── Platform auto-detected badge ── */
+    .platform-detected {
+      display: none;
+      font-size: 0.72rem;
+      color: var(--accent);
+      font-weight: 500;
+      letter-spacing: 0.04em;
+      align-items: center;
+      gap: 6px;
+    }
+    .platform-detected.show { display: flex; }
+    .platform-detected::before {
+      content: '';
+      width: 6px; height: 6px;
+      background: var(--accent);
+      border-radius: 50%;
+    }
+
     .options-row {
       display: flex;
-      gap: 12px;
+      gap: 10px;
       flex-wrap: wrap;
     }
 
@@ -187,14 +377,12 @@
       font-family: 'DM Sans', sans-serif;
       font-weight: 400;
     }
-
     .chip:hover, .chip.active {
       background: var(--ink);
       color: var(--paper);
       border-color: var(--ink);
     }
 
-    /* ── Button ── */
     .btn-generate {
       display: flex;
       align-items: center;
@@ -212,27 +400,13 @@
       padding: 16px 28px;
       cursor: pointer;
       transition: background 0.2s, transform 0.1s;
-      position: relative;
-      overflow: hidden;
     }
-
     .btn-generate:hover { background: #222; }
     .btn-generate:active { transform: scale(0.98); }
+    .btn-generate:disabled { background: var(--rule); cursor: not-allowed; transform: none; }
+    .btn-generate .arrow { transition: transform 0.2s; }
+    .btn-generate:not(:disabled):hover .arrow { transform: translateX(4px); }
 
-    .btn-generate:disabled {
-      background: var(--rule);
-      cursor: not-allowed;
-      transform: none;
-    }
-
-    .btn-generate .arrow {
-      transition: transform 0.2s;
-    }
-    .btn-generate:not(:disabled):hover .arrow {
-      transform: translateX(4px);
-    }
-
-    /* Spinner */
     .spinner {
       width: 16px; height: 16px;
       border: 2px solid rgba(255,255,255,0.3);
@@ -244,10 +418,8 @@
     .btn-generate.loading .spinner { display: block; }
     .btn-generate.loading .btn-text,
     .btn-generate.loading .arrow { display: none; }
-
     @keyframes spin { to { transform: rotate(360deg); } }
 
-    /* ── Right panel ── */
     .panel-right {
       padding: 48px 40px;
       display: flex;
@@ -255,7 +427,6 @@
       gap: 24px;
     }
 
-    /* ── Output ── */
     #output-wrap {
       flex: 1;
       display: flex;
@@ -269,103 +440,141 @@
       align-items: center;
       justify-content: center;
       gap: 16px;
-      color: var(--rule);
       text-align: center;
       padding: 40px;
       border: 1px dashed var(--rule);
       border-radius: var(--radius);
     }
-
-    .output-empty .empty-icon {
-      font-size: 2.5rem;
-      opacity: 0.5;
-    }
-
-    .output-empty p {
-      font-size: 0.85rem;
-      color: var(--muted);
-      max-width: 260px;
-      line-height: 1.6;
-    }
+    .output-empty .empty-icon { font-size: 2.5rem; opacity: 0.4; }
+    .output-empty p { font-size: 0.85rem; color: var(--muted); max-width: 260px; line-height: 1.6; }
 
     #report-output {
       display: none;
       flex-direction: column;
-      gap: 0;
       animation: fadeUp 0.4s ease both;
     }
-
     @keyframes fadeUp {
       from { opacity: 0; transform: translateY(12px); }
       to   { opacity: 1; transform: translateY(0); }
     }
 
-    /* Report header bar */
     .report-header {
       background: var(--ink);
       color: var(--paper);
-      padding: 18px 24px;
+      padding: 16px 24px;
       border-radius: var(--radius) var(--radius) 0 0;
       display: flex;
       align-items: center;
-      justify-content: space-between;
+      gap: 12px;
     }
-
-    .report-header .report-title {
+    .report-title {
       font-family: 'DM Serif Display', serif;
       font-size: 1rem;
       letter-spacing: -0.01em;
+      flex: 1;
+      min-width: 0;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
     }
-
-    .report-header .report-meta {
+    .report-meta {
       font-size: 0.72rem;
-      color: rgba(255,255,255,0.45);
+      color: rgba(255,255,255,0.4);
       font-family: 'DM Mono', monospace;
+      flex-shrink: 0;
     }
 
-    .copy-btn {
-      background: rgba(255,255,255,0.08);
-      border: 1px solid rgba(255,255,255,0.15);
-      color: rgba(255,255,255,0.7);
+    .action-btns { display: flex; gap: 8px; flex-shrink: 0; }
+
+    .copy-btn, .docx-btn {
       padding: 5px 12px;
       font-size: 0.72rem;
       border-radius: var(--radius);
       cursor: pointer;
       font-family: 'DM Sans', sans-serif;
       transition: all 0.15s;
+      white-space: nowrap;
+    }
+    .copy-btn {
+      background: rgba(255,255,255,0.08);
+      border: 1px solid rgba(255,255,255,0.15);
+      color: rgba(255,255,255,0.7);
     }
     .copy-btn:hover { background: rgba(255,255,255,0.16); color: white; }
+    .docx-btn {
+      background: var(--accent);
+      border: 1px solid transparent;
+      color: white;
+      font-weight: 500;
+    }
+    .docx-btn:hover { background: #b03d24; }
+    .docx-btn:disabled { background: rgba(255,255,255,0.15); color: rgba(255,255,255,0.4); cursor: not-allowed; }
 
-    /* Report body */
     .report-body {
       background: var(--cream);
       border: 1px solid var(--rule);
       border-top: none;
       border-radius: 0 0 var(--radius) var(--radius);
-      padding: 28px 28px;
+      padding: 32px;
       font-size: 0.92rem;
-      line-height: 1.75;
+      line-height: 1.8;
       color: var(--ink);
-      white-space: pre-wrap;
       word-break: break-word;
-      max-height: 520px;
+      max-height: 560px;
       overflow-y: auto;
     }
 
-    /* Streaming cursor */
+    .report-body .r-section { margin-bottom: 24px; }
+    .report-body .r-heading {
+      font-family: 'DM Serif Display', serif;
+      font-size: 1.05rem;
+      font-weight: 400;
+      color: var(--ink);
+      border-bottom: 1px solid var(--rule);
+      padding-bottom: 7px;
+      margin-bottom: 14px;
+    }
+    .report-body .r-para { margin-bottom: 12px; color: #2a2620; line-height: 1.8; }
+    .report-body .r-numbered {
+      padding-left: 22px;
+      position: relative;
+      margin-bottom: 10px;
+      color: #2a2620;
+      line-height: 1.7;
+    }
+    .report-body .r-bullet {
+      padding-left: 18px;
+      position: relative;
+      margin-bottom: 8px;
+      color: #2a2620;
+      line-height: 1.7;
+    }
+    .report-body .r-bullet::before {
+      content: '—';
+      position: absolute;
+      left: 0;
+      color: var(--accent);
+      font-weight: 500;
+    }
+    .report-body .r-footer {
+      margin-top: 28px;
+      padding-top: 14px;
+      border-top: 1px solid var(--rule);
+      font-size: 0.78rem;
+      color: var(--muted);
+      font-family: 'DM Mono', monospace;
+    }
+
     .cursor {
       display: inline-block;
-      width: 2px;
-      height: 1em;
+      width: 2px; height: 1em;
       background: var(--accent);
       vertical-align: text-bottom;
       margin-left: 2px;
       animation: blink 0.9s step-end infinite;
     }
-
     @keyframes blink { 50% { opacity: 0; } }
 
-    /* ── Error state ── */
     .error-banner {
       display: none;
       background: #fdf0ed;
@@ -377,7 +586,6 @@
       line-height: 1.5;
     }
 
-    /* ── Footer ── */
     footer {
       position: relative; z-index: 1;
       border-top: 1px solid var(--rule);
@@ -386,13 +594,7 @@
       align-items: center;
       justify-content: space-between;
     }
-
-    .footer-note {
-      font-size: 0.72rem;
-      color: var(--muted);
-      letter-spacing: 0.04em;
-    }
-
+    .footer-note { font-size: 0.72rem; color: var(--muted); letter-spacing: 0.04em; }
     .model-badge {
       font-family: 'DM Mono', monospace;
       font-size: 0.7rem;
@@ -403,7 +605,6 @@
       border-radius: 99px;
     }
 
-    /* ── Responsive ── */
     @media (max-width: 900px) {
       main { grid-template-columns: 1fr; }
       .panel-left { border-right: none; border-bottom: 1px solid var(--rule); }
@@ -411,6 +612,7 @@
       .panel-left, .panel-right { padding: 32px 24px; }
       footer { padding: 14px 24px; }
       h1 { font-size: 2rem; }
+      .fields-grid { grid-template-columns: 1fr; }
     }
   </style>
 </head>
@@ -422,21 +624,44 @@
   </header>
 
   <main>
-    <!-- LEFT: Input -->
     <section class="panel-left">
       <div class="section-label">Input</div>
 
       <h1>Turn raw numbers into<br><em>client-ready</em> reports.</h1>
 
       <p class="description">
-        Paste your campaign metrics below — impressions, clicks, spend, conversions, ROAS, anything you have. The AI will analyze and write a polished report your clients will love.
+        Paste your campaign metrics, choose your tone, and get a polished report your clients will trust — in seconds.
       </p>
 
+      <div>
+        <div class="section-label" style="margin-bottom:12px;">Report Details</div>
+        <div class="fields-grid">
+          <div class="field-group">
+            <span class="field-label">Client Name</span>
+            <input type="text" class="text-input" id="client-name" placeholder="e.g. Zomato India" />
+          </div>
+          <div class="field-group">
+            <span class="field-label">Your Agency Name</span>
+            <input type="text" class="text-input" id="agency-name" placeholder="e.g. PixelGrowth" />
+          </div>
+        </div>
+      </div>
+
       <div class="input-block">
-        <div class="section-label">Raw Campaign Data</div>
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;">
+          <div class="section-label" style="flex:1;margin-bottom:0;">Campaign Data</div>
+        </div>
+
+        <!-- Mode tabs -->
+        <div class="mode-tabs">
+          <button class="mode-tab active" id="tab-paste" onclick="switchMode('paste')">Paste Data</button>
+          <button class="mode-tab" id="tab-upload" onclick="switchMode('upload')">Upload File</button>
+        </div>
+
+        <!-- Paste mode -->
         <textarea
           id="raw-data"
-          placeholder="Paste your numbers here. For example:
+          placeholder="Paste your numbers here — any format works. For example:
 
 Campaign: Q1 Google Ads — Brand Search
 Date Range: Jan 1 – Mar 31, 2025
@@ -447,25 +672,56 @@ Spend: ₹9,200
 Conversions: 344
 CPA: ₹26.74
 ROAS: 4.2x
-Revenue: ₹38,640
-
-Feel free to paste any format — messy is fine."
+Revenue: ₹38,640"
         ></textarea>
+
+        <!-- Upload mode: drop zone -->
+        <div class="upload-zone" id="upload-zone" onclick="document.getElementById('file-input').click()">
+          <input type="file" id="file-input" accept=".csv,.xlsx,.xls" />
+          <div class="upload-icon">↑</div>
+          <div class="upload-title">Drop your export file here</div>
+          <div class="upload-sub">or click to browse your files</div>
+          <div class="upload-formats">
+            <span class="format-pill">.csv</span>
+            <span class="format-pill">.xlsx</span>
+            <span class="format-pill">.xls</span>
+          </div>
+        </div>
+
+        <!-- Upload mode: file loaded -->
+        <div class="file-loaded" id="file-loaded">
+          <div class="file-card">
+            <div class="file-card-icon" id="file-ext-badge">CSV</div>
+            <div class="file-card-info">
+              <div class="file-card-name" id="file-name">filename.csv</div>
+              <div class="file-card-meta" id="file-meta">Loading...</div>
+            </div>
+            <button class="file-card-remove" onclick="clearFile()" title="Remove file">✕</button>
+          </div>
+          <div class="file-preview" id="file-preview"></div>
+        </div>
       </div>
 
-      <div class="section-label">Ad Platform</div>
-      <div class="options-row" id="platform-chips">
-        <button class="chip active" data-platform="both">Meta + Google</button>
-        <button class="chip" data-platform="meta">Meta Ads</button>
-        <button class="chip" data-platform="google">Google Ads</button>
+      <div>
+        <div class="section-label" style="margin-bottom:12px;">Ad Platform</div>
+        <div class="options-row" id="platform-chips">
+          <button class="chip active" data-platform="both">Meta + Google</button>
+          <button class="chip" data-platform="meta">Meta Ads</button>
+          <button class="chip" data-platform="google">Google Ads</button>
+        </div>
+        <div class="platform-detected" id="platform-detected" style="margin-top:8px;">
+          Auto-detected from file
+        </div>
       </div>
 
-      <div class="section-label">Report Tone</div>
-      <div class="options-row" id="tone-chips">
-        <button class="chip active" data-tone="professional">Professional</button>
-        <button class="chip" data-tone="executive">Executive Summary</button>
-        <button class="chip" data-tone="detailed">Detailed Analysis</button>
-        <button class="chip" data-tone="casual">Casual / Friendly</button>
+      <div>
+        <div class="section-label" style="margin-bottom:12px;">Report Tone</div>
+        <div class="options-row" id="tone-chips">
+          <button class="chip active" data-tone="professional">Professional</button>
+          <button class="chip" data-tone="executive">Executive Summary</button>
+          <button class="chip" data-tone="detailed">Detailed Analysis</button>
+          <button class="chip" data-tone="casual">Casual / Friendly</button>
+        </div>
       </div>
 
       <button class="btn-generate" id="generate-btn" onclick="generateReport()">
@@ -475,33 +731,30 @@ Feel free to paste any format — messy is fine."
           <path stroke-linecap="round" stroke-linejoin="round" d="M17 8l4 4m0 0l-4 4m4-4H3"/>
         </svg>
       </button>
-
     </section>
 
-    <!-- RIGHT: Output -->
     <section class="panel-right">
       <div class="section-label">Report Output</div>
-
       <div id="error-banner" class="error-banner"></div>
 
       <div id="output-wrap">
         <div class="output-empty" id="empty-state">
           <div class="empty-icon">📊</div>
-          <p>Your generated report will appear here. Paste your data and click Generate.</p>
+          <p>Your generated report will appear here. Fill in the details and click Generate.</p>
         </div>
 
         <div id="report-output">
           <div class="report-header">
-            <div class="report-title">Campaign Report</div>
-            <div style="display:flex;gap:10px;align-items:center;">
-              <span class="report-meta" id="report-timestamp"></span>
+            <div class="report-title" id="report-title">Campaign Report</div>
+            <span class="report-meta" id="report-timestamp"></span>
+            <div class="action-btns">
               <button class="copy-btn" onclick="copyReport()">Copy</button>
+              <button class="docx-btn" id="docx-btn" onclick="downloadDocx()" disabled>↓ Word</button>
             </div>
           </div>
           <div class="report-body" id="report-text"></div>
         </div>
       </div>
-
     </section>
   </main>
 
@@ -510,152 +763,386 @@ Feel free to paste any format — messy is fine."
     <span class="model-badge">gemini-2.5-flash</span>
   </footer>
 
+  <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+  <script src="https://unpkg.com/docx@8.5.0/build/index.js"></script>
+
   <script>
-    // ── Platform chips ──
-    const platformChips = document.querySelectorAll('#platform-chips .chip');
     let activePlatform = 'both';
-    platformChips.forEach(chip => {
+    let activeTone = 'professional';
+    let lastGeneratedText = '';
+    let inputMode = 'paste';       // 'paste' | 'upload'
+    let parsedFileData = '';       // structured text sent to the AI when in upload mode
+
+    // ── Platform detection from CSV/XLSX column headers ──
+    function detectPlatform(headers) {
+      const h = headers.map(s => String(s).toLowerCase().trim());
+      const metaSignals   = ['reach', 'frequency', 'ad set name', 'adset name', 'ad set', 'objective',
+                              'result type', 'cost per result', 'amount spent', 'website purchases'];
+      const googleSignals = ['campaign', 'ad group', 'keyword', 'match type', 'quality score',
+                              'search impression share', 'search lost', 'avg. cpc', 'avg. cpm',
+                              'view-through conv.', 'all conv.'];
+      let metaScore   = h.filter(x => metaSignals.some(s => x.includes(s))).length;
+      let googleScore = h.filter(x => googleSignals.some(s => x.includes(s))).length;
+      if (metaScore > 0 && googleScore === 0) return 'meta';
+      if (googleScore > 0 && metaScore === 0) return 'google';
+      return null; // ambiguous — don't auto-select
+    }
+
+    function setPlatformChip(platform) {
+      document.querySelectorAll('#platform-chips .chip').forEach(c => c.classList.remove('active'));
+      const chip = document.querySelector(`#platform-chips .chip[data-platform="${platform}"]`);
+      if (chip) { chip.classList.add('active'); activePlatform = platform; }
+      const badge = document.getElementById('platform-detected');
+      if (platform && platform !== 'both') {
+        badge.textContent = `Auto-detected: ${chip ? chip.textContent : platform}`;
+        badge.classList.add('show');
+      } else {
+        badge.classList.remove('show');
+      }
+    }
+
+    // ── CSV parser (handles quoted fields, commas inside quotes) ──
+    function parseCSV(text) {
+      const lines = text.trim().split(/\r?\n/);
+      const result = [];
+      for (const line of lines) {
+        const row = [];
+        let cur = '', inQ = false;
+        for (let i = 0; i < line.length; i++) {
+          const ch = line[i];
+          if (ch === '"') { inQ = !inQ; }
+          else if (ch === ',' && !inQ) { row.push(cur.trim()); cur = ''; }
+          else { cur += ch; }
+        }
+        row.push(cur.trim());
+        result.push(row);
+      }
+      return result;
+    }
+
+    // ── Convert parsed rows → clean text for AI ──
+    function rowsToText(rows) {
+      if (rows.length === 0) return '';
+      const headers = rows[0];
+      const lines = [];
+      // Column headers as reference
+      lines.push('Columns: ' + headers.join(' | '));
+      lines.push('');
+      // Each data row as key:value pairs (skip empty rows)
+      for (let i = 1; i < rows.length; i++) {
+        const row = rows[i];
+        if (row.every(cell => !cell || cell === '""' || cell === '-')) continue;
+        const pairs = headers.map((h, idx) => {
+          const val = (row[idx] || '').replace(/^"|"$/g, '').trim();
+          return val ? `${h}: ${val}` : null;
+        }).filter(Boolean);
+        if (pairs.length > 0) {
+          lines.push(pairs.join(', '));
+        }
+      }
+      return lines.join('\n');
+    }
+
+    // ── Process a loaded file ──
+    function processFile(file) {
+      const ext = file.name.split('.').pop().toLowerCase();
+      const reader = new FileReader();
+
+      reader.onload = (e) => {
+        let rows = [];
+
+        if (ext === 'csv') {
+          rows = parseCSV(e.target.result);
+        } else if (ext === 'xlsx' || ext === 'xls') {
+          const wb = XLSX.read(e.target.result, { type: 'array' });
+          const ws = wb.Sheets[wb.SheetNames[0]];
+          rows = XLSX.utils.sheet_to_json(ws, { header: 1, defval: '' });
+        }
+
+        if (rows.length < 2) {
+          showError("Couldn't read data from this file. Make sure it has headers in the first row.");
+          clearFile();
+          return;
+        }
+
+        // Remove completely empty rows
+        rows = rows.filter(r => r.some(c => c !== '' && c !== null && c !== undefined));
+
+        parsedFileData = rowsToText(rows);
+        const headers = rows[0].map(String);
+        const rowCount = rows.length - 1;
+        const colCount = headers.length;
+
+        // Auto-detect platform
+        const detected = detectPlatform(headers);
+        if (detected) {
+          setPlatformChip(detected);
+        } else {
+          document.getElementById('platform-detected').classList.remove('show');
+        }
+
+        // Show file card
+        document.getElementById('file-ext-badge').textContent = ext.toUpperCase();
+        document.getElementById('file-name').textContent = file.name;
+        document.getElementById('file-meta').textContent =
+          `${rowCount} row${rowCount !== 1 ? 's' : ''} · ${colCount} columns · ${(file.size / 1024).toFixed(1)} KB`;
+
+        // Show preview (first 8 rows as tab-separated)
+        const previewRows = rows.slice(0, 9);
+        const preview = previewRows.map(r => r.map(c => String(c).slice(0, 22)).join('\t')).join('\n');
+        document.getElementById('file-preview').textContent = preview;
+
+        // Switch from drop zone to file card
+        document.getElementById('upload-zone').style.display = 'none';
+        document.getElementById('file-loaded').classList.add('active');
+      };
+
+      if (ext === 'csv') {
+        reader.readAsText(file);
+      } else {
+        reader.readAsArrayBuffer(file);
+      }
+    }
+
+    function clearFile() {
+      parsedFileData = '';
+      document.getElementById('file-input').value = '';
+      document.getElementById('upload-zone').style.display = 'flex';
+      document.getElementById('file-loaded').classList.remove('active');
+      document.getElementById('platform-detected').classList.remove('show');
+    }
+
+    // ── Mode switcher ──
+    function switchMode(mode) {
+      inputMode = mode;
+      document.getElementById('tab-paste').classList.toggle('active', mode === 'paste');
+      document.getElementById('tab-upload').classList.toggle('active', mode === 'upload');
+
+      const textarea = document.getElementById('raw-data');
+      const uploadZone = document.getElementById('upload-zone');
+      const fileLoaded = document.getElementById('file-loaded');
+
+      if (mode === 'paste') {
+        textarea.style.display = 'block';
+        uploadZone.style.display = 'none';
+        fileLoaded.classList.remove('active');
+        document.getElementById('platform-detected').classList.remove('show');
+      } else {
+        textarea.style.display = 'none';
+        // Show zone or loaded state depending on whether a file is already loaded
+        if (parsedFileData) {
+          uploadZone.style.display = 'none';
+          fileLoaded.classList.add('active');
+        } else {
+          uploadZone.style.display = 'flex';
+          fileLoaded.classList.remove('active');
+        }
+      }
+    }
+
+    // ── File input change handler ──
+    document.getElementById('file-input').addEventListener('change', (e) => {
+      const file = e.target.files[0];
+      if (file) processFile(file);
+    });
+
+    // ── Drag and drop ──
+    const zone = document.getElementById('upload-zone');
+    zone.addEventListener('dragover', (e) => { e.preventDefault(); zone.classList.add('drag-over'); });
+    zone.addEventListener('dragleave', () => zone.classList.remove('drag-over'));
+    zone.addEventListener('drop', (e) => {
+      e.preventDefault();
+      zone.classList.remove('drag-over');
+      const file = e.dataTransfer.files[0];
+      if (file) processFile(file);
+    });
+
+
       chip.addEventListener('click', () => {
-        platformChips.forEach(c => c.classList.remove('active'));
+        document.querySelectorAll('#platform-chips .chip').forEach(c => c.classList.remove('active'));
         chip.classList.add('active');
         activePlatform = chip.dataset.platform;
       });
     });
 
-    // ── Tone chips ──
-    const toneChips = document.querySelectorAll('#tone-chips .chip');
-    let activeTone = 'professional';
-    toneChips.forEach(chip => {
+    document.querySelectorAll('#tone-chips .chip').forEach(chip => {
       chip.addEventListener('click', () => {
-        toneChips.forEach(c => c.classList.remove('active'));
+        document.querySelectorAll('#tone-chips .chip').forEach(c => c.classList.remove('active'));
         chip.classList.add('active');
         activeTone = chip.dataset.tone;
       });
     });
 
-    // ── Tone prompt map ──
     const tonePrompts = {
       professional: {
-        style: `Write in a professional, client-facing tone. Use complete sentences and formal language.
-Be direct about both wins and underperformance. The reader is a marketing manager who understands
-ad metrics but wants clear interpretation, not raw numbers alone.`,
-        sections: `Structure the report with these exact sections:
-- **Campaign Overview** — platform(s), campaign goal, date range, total spend
-- **Key Performance Highlights** — 3–5 standout metrics with context (e.g. "CTR of 2.4% is above the Meta average of 1.9%")
-- **Performance Analysis** — interpret what the numbers mean. Flag what worked, what underperformed, and why
-- **Recommendations** — exactly 3 concrete, actionable next steps with reasoning
-- **Conclusion** — 2–3 sentences summarising the overall campaign health`,
-        maxTokens: 1200
+        style: `You are a senior digital marketing strategist writing a client-facing performance report.
+Your writing is confident, precise, and free of filler. Every sentence earns its place.
+Voice rules:
+- Never define a metric for the reader. They know what CTR, ROAS, and CPA mean.
+- Never repeat the same number twice across sections unless making a direct comparison.
+- Lead each paragraph with the insight, not the number. Bad: "CTR was 4.5%." Good: "Brand search ads drew strong intent, with a 4.5% CTR comfortably above Google's 3–6% benchmark."
+- Write in flowing paragraphs. No bullet lists anywhere.
+- Be honest about underperformance. Sugarcoating destroys trust.`,
+        sections: `Write exactly these four sections in order:
+
+**Campaign Overview**
+One concise paragraph covering what ran, on which platform, over what period, and total spend. Maximum 4 sentences.
+
+**Performance Highlights**
+Two to three paragraphs interpreting the strongest results. Open with the business outcome (revenue, ROAS, or conversions), then explain what drove it. Reference benchmarks where the data allows.
+
+**What Needs Attention**
+One honest paragraph on the weakest result or biggest gap. Name the specific problem, not a vague disclaimer.
+
+**Recommendations**
+Three recommendations. Each is one sentence stating the action, followed by one sentence explaining why. Number them 1, 2, 3.`,
+        maxTokens: 1000
       },
       executive: {
-        style: `Write as if briefing a busy CEO or business owner who has 60 seconds to read this.
-Lead with the most important insight. No jargon. Translate every metric into business impact
-(revenue, ROI, cost per customer). Be blunt about what's working and what isn't.`,
-        sections: `Structure the report with these exact sections:
-- **Bottom Line** — one paragraph: did this campaign deliver value? Yes or no, and why
-- **3 Numbers That Matter** — pick the 3 most business-critical metrics and explain each in plain English
-- **What To Do Next** — 2 decisions the executive should make, written as clear action items
-- **Risk / Opportunity** — one thing that needs attention and one thing worth doubling down on`,
-        maxTokens: 700
+        style: `You are writing a 60-second brief for a CEO or founder.
+Rules:
+- Open with the single most important fact about business impact.
+- Translate metrics into business outcomes: "344 new customers acquired at ₹27 each."
+- Maximum 20 words per sentence. Short sentences.
+- No hedging. Was it worth the money? Say so directly.
+- Total length: under 250 words.`,
+        sections: `Write exactly these three sections:
+
+**The Verdict**
+One punchy paragraph: did this campaign deliver value? State the ROI story plainly.
+
+**Three Numbers That Matter**
+Three short paragraphs, one number each. Choose the three most decision-relevant metrics for a business owner.
+
+**Two Actions Required**
+Two direct action items. Write as instructions, not suggestions. "Increase budget on X" not "You might consider increasing budget."`,
+        maxTokens: 600
       },
       detailed: {
-        style: `Write as a senior performance analyst preparing an internal review. Be thorough and technical.
-Show your reasoning. Reference industry benchmarks where relevant. The reader is a media buyer or
-digital strategist who wants depth, not summaries.`,
-        sections: `Structure the report with these exact sections:
-- **Campaign Overview** — all campaign parameters: platform, objective, audience, spend, date range
-- **Metric-by-Metric Breakdown** — analyse each metric individually: impressions, reach, CTR, CPC, CPM, conversions, CPA, ROAS (use only what's provided)
-- **Funnel Analysis** — trace the user journey from impression → click → conversion. Identify where drop-off occurs
-- **Benchmark Comparison** — compare key metrics against typical industry ranges (Meta CTR: 0.9–2.5%, Google Search CTR: 3–6%, average CPA varies by industry)
-- **Performance Drivers** — what likely caused the results (creative, audience, bidding, landing page)
-- **Optimisation Recommendations** — 4–5 specific, technical recommendations with expected impact
-- **Conclusion** — overall assessment with a performance framing (strong / average / needs work)`,
+        style: `You are a performance analyst writing an in-depth review for a media buyer or marketing director.
+Rules:
+- Cite benchmarks precisely. "Google Search average CTR is 3–6%" is useful. "CTR was good" is not.
+- For each metric: state the number, provide benchmark context, then draw a specific conclusion.
+- Identify exactly where in the funnel performance excels and where value leaks.
+- Never repeat a metric between sections — each section adds new interpretation.
+- Never mention metrics absent from the input data. Skip missing sections entirely without comment.`,
+        sections: `Write exactly these five sections:
+
+**Campaign Parameters**
+All provided details: platform, objective, date range, total spend. One tight paragraph.
+
+**Performance Deep-Dive**
+One paragraph per metric group found in the data — for example: reach metrics (impressions, CPM), engagement metrics (clicks, CTR, CPC), conversion metrics (conversions, CPA, ROAS, revenue). Each paragraph states the metric, its benchmark context, and what it reveals about campaign health. Only write paragraphs for metric groups present in the data.
+
+**Funnel Diagnosis**
+Trace the journey from impression to conversion using only the provided data. Name the biggest efficiency gap — where value is most lost — specifically.
+
+**Benchmark Verdict**
+For each key metric provided, state whether it sits Above, On Par, or Below benchmark, and by how much. Write this as tight prose, not a table.
+
+**Optimisation Roadmap**
+Five specific, technical recommendations. Each names the exact lever to pull (bid strategy, audience exclusion, creative test, landing page change, etc.) and links it directly to the funnel gap identified above.`,
         maxTokens: 1800
       },
       casual: {
-        style: `Write like a knowledgeable friend explaining results over a coffee. Warm, encouraging,
-but honest. Use simple language — no jargon unless you explain it. Celebrate wins genuinely.
-Frame problems as opportunities. The reader is a small business owner or junior marketer.`,
-        sections: `Structure the report with these exact sections:
-- **How Did It Go?** — a friendly 2–3 sentence overview of the campaign
-- **The Wins** — what went well, explained simply with the relevant numbers
-- **What We Can Improve** — honest but encouraging — what to fix and why it matters
-- **Our Top Recommendations** — 3 suggestions written as friendly advice, not corporate directives
-- **Wrapping Up** — a short, positive closing that motivates action`,
-        maxTokens: 1000
+        style: `You are a knowledgeable friend who runs a digital agency, explaining results over coffee.
+Rules:
+- Warm and honest. Don't spin bad results as secretly great.
+- Plain language. When you use a term like ROAS, explain it in one clause: "ROAS of 4.2x — every rupee spent returned ₹4.20."
+- Short paragraphs, energetic pace.
+- Celebrate real wins with specific numbers, not hollow praise.
+- End with genuine forward momentum.`,
+        sections: `Write exactly these four sections:
+
+**So, How Did It Go?**
+Two sentences: the honest headline verdict, and the most exciting result.
+
+**What's Working**
+Two paragraphs on the real wins. Be specific with numbers and explain why they matter for the business.
+
+**Where We Can Do Better**
+One honest paragraph. Frame it as the opportunity not yet captured, not a list of failures.
+
+**What We're Doing Next**
+Three specific suggestions written like advice to a friend, not a strategy deck.`,
+        maxTokens: 900
       }
     };
 
-    // ── Platform context map ──
     const platformContext = {
-      meta: `This is a Meta Ads (Facebook/Instagram) campaign. Relevant benchmarks: average CTR 0.9–2.5%,
-average CPM ₹200–600 (India), average CPC ₹5–25, good ROAS for ecommerce is 3x+.`,
-      google: `This is a Google Ads campaign. Relevant benchmarks: Search CTR 3–6%, Display CTR 0.1–0.5%,
-average CPC varies widely by keyword competition, good conversion rate is 2–4% for Search.`,
-      both: `This report covers both Meta Ads and Google Ads. Where possible, compare platform performance
-against each other and against their respective benchmarks. Note that these platforms serve different
-funnel stages — Google captures existing demand, Meta creates new demand.
-Meta benchmarks: CTR 0.9–2.5%, CPM ₹200–600, CPC ₹5–25.
-Google benchmarks: Search CTR 3–6%, Display CTR 0.1–0.5%, conversion rate 2–4%.`
+      meta: `Platform: Meta Ads (Facebook/Instagram).
+India benchmarks: CTR 0.9–2.5%, CPM ₹200–600, CPC ₹5–25, ROAS 3x+ considered strong for ecommerce.
+Meta is demand-generation — users are not actively searching, so intent is lower than Search.`,
+      google: `Platform: Google Ads.
+Benchmarks: Search CTR 3–6% (brand campaigns typically 5–15%), Display CTR 0.1–0.5%, conversion rate 2–5% for Search.
+Google captures existing demand — users are actively searching, so intent is high.`,
+      both: `Platforms: Meta Ads and Google Ads combined.
+Meta India benchmarks: CTR 0.9–2.5%, CPM ₹200–600, CPC ₹5–25.
+Google benchmarks: Search CTR 3–6%, Display CTR 0.1–0.5%, conversion rate 2–5%.
+Key distinction: Google captures demand (high intent, lower volume); Meta creates demand (lower intent, higher reach). Compare platform efficiency where data allows.`
     };
 
-    // ── Generate ──
     async function generateReport() {
-      const rawData = document.getElementById('raw-data').value.trim();
-      if (!rawData) {
-        showError("Please paste some campaign data before generating a report.");
-        return;
+      let rawData;
+      if (inputMode === 'upload') {
+        if (!parsedFileData) { showError("Please upload a CSV or XLSX file first."); return; }
+        rawData = parsedFileData;
+      } else {
+        rawData = document.getElementById('raw-data').value.trim();
+        if (!rawData) { showError("Please paste some campaign data before generating."); return; }
       }
+
+      const clientName = document.getElementById('client-name').value.trim() || 'Client';
+      const agencyName = document.getElementById('agency-name').value.trim() || 'Agency';
 
       const btn = document.getElementById('generate-btn');
       const emptyState = document.getElementById('empty-state');
       const reportOutput = document.getElementById('report-output');
       const reportText = document.getElementById('report-text');
-      const errorBanner = document.getElementById('error-banner');
+      const docxBtn = document.getElementById('docx-btn');
 
-      // Reset state
-      errorBanner.style.display = 'none';
+      document.getElementById('error-banner').style.display = 'none';
       btn.classList.add('loading');
       btn.disabled = true;
+      docxBtn.disabled = true;
       emptyState.style.display = 'none';
       reportOutput.style.display = 'flex';
       reportText.innerHTML = '<span class="cursor"></span>';
-      document.getElementById('report-timestamp').textContent = new Date().toLocaleString('en-IN', {month:'short', day:'numeric', year:'numeric', hour:'2-digit', minute:'2-digit'});
+      lastGeneratedText = '';
+
+      document.getElementById('report-title').textContent = `${clientName} — Campaign Report`;
+      document.getElementById('report-timestamp').textContent = new Date().toLocaleString('en-IN', {
+        month: 'short', day: 'numeric', year: 'numeric', hour: '2-digit', minute: '2-digit'
+      });
 
       const tone = tonePrompts[activeTone];
 
-      const systemPrompt = `You are an expert digital marketing analyst writing a client-facing campaign performance report for an Indian marketing agency.
+      const systemPrompt = `You are an expert digital marketing analyst. Your reports are used by top Indian marketing agencies to present results to clients. Your writing is the reason agencies keep paying for this tool.
 
-TONE AND STYLE:
 ${tone.style}
 
 PLATFORM CONTEXT:
 ${platformContext[activePlatform]}
 
-REPORT STRUCTURE:
+REPORT STRUCTURE — follow this exactly:
 ${tone.sections}
 
-STRICT RULES:
-- ONLY use metrics that are explicitly stated in the user's data. Do not calculate, derive, or estimate any metric — not CPC, not CPM, not CPA, not ROAS, nothing. If a metric is not in the data, it does not exist for this report.
-- If a metric is missing, skip it entirely. Do not say "this was not provided" — just move on.
-- Never do arithmetic on the user's numbers. No formulas, no calculations, no approximations.
-- Always interpret numbers in context — a raw metric means nothing without meaning attached to it.
-- Use **bold** for all section headers, nothing else.
-- Use ₹ for currency if spend is given in rupees, otherwise match the currency in the data.
-- Write in flowing paragraphs, not bullet-pointed lists of metrics. The report should read like a human analyst wrote it, not like a data dump.
-- End every report with a single line: "— Report generated by AgencyReport AI"`;
+NON-NEGOTIABLE RULES:
+1. Use ONLY metrics explicitly stated in the data. Do not calculate, derive, or approximate any metric. No arithmetic whatsoever.
+2. If a metric is absent, skip it silently. Never mention its absence.
+3. Never repeat the same number more than once across the entire report.
+4. Do not define standard marketing terms (CTR, ROAS, CPA, CPM, etc.) for the reader.
+5. Section headers: **bold markdown**. No other bold text anywhere.
+6. Currency: match whatever is in the data. Use ₹ if rupees are present.
+7. Final line of the report, after a blank line: — Prepared by ${agencyName} for ${clientName}`;
 
-      const userPrompt = `Please generate a campaign performance report using the following data:\n\n${rawData}`;
+      const userPrompt = `Generate the campaign performance report.\n\nData:\n${rawData}`;
 
       try {
         const response = await fetch("/api/generate", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            system: systemPrompt,
-            prompt: userPrompt,
-            maxTokens: tone.maxTokens
-          })
+          body: JSON.stringify({ system: systemPrompt, prompt: userPrompt, maxTokens: tone.maxTokens })
         });
 
         if (!response.ok) {
@@ -663,7 +1150,6 @@ STRICT RULES:
           throw new Error(err.error?.message || `API error ${response.status}`);
         }
 
-        // Stream the response
         let fullText = '';
         const reader = response.body.getReader();
         const decoder = new TextDecoder();
@@ -672,11 +1158,9 @@ STRICT RULES:
         while (true) {
           const { done, value } = await reader.read();
           if (done) break;
-
           buffer += decoder.decode(value, { stream: true });
           const lines = buffer.split('\n');
           buffer = lines.pop();
-
           for (const line of lines) {
             if (!line.startsWith('data: ')) continue;
             const data = line.slice(6).trim();
@@ -686,18 +1170,19 @@ STRICT RULES:
               const chunk = parsed.candidates?.[0]?.content?.parts?.[0]?.text;
               if (chunk) {
                 fullText += chunk;
-                reportText.innerHTML = formatReport(fullText) + '<span class="cursor"></span>';
+                reportText.innerHTML = renderReport(fullText) + '<span class="cursor"></span>';
                 reportText.scrollTop = reportText.scrollHeight;
               }
             } catch (_) {}
           }
         }
 
-        // Final render, no cursor
-        reportText.innerHTML = formatReport(fullText);
+        lastGeneratedText = fullText;
+        reportText.innerHTML = renderReport(fullText);
+        docxBtn.disabled = false;
 
       } catch (err) {
-        reportOutput.style.display = 'none';
+        document.getElementById('report-output').style.display = 'none';
         emptyState.style.display = 'flex';
         showError("Something went wrong: " + err.message);
       } finally {
@@ -706,32 +1191,184 @@ STRICT RULES:
       }
     }
 
-    // ── Format report text (bold headers, bullet points) ──
-    function formatReport(text) {
-      return text
-        .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
-        .replace(/^- (.+)$/gm, '&nbsp;&nbsp;• $1')
-        .replace(/\n/g, '<br>');
+    function renderReport(text) {
+      const lines = text.split('\n');
+      let html = '';
+      let inSection = false;
+
+      for (let i = 0; i < lines.length; i++) {
+        const line = lines[i];
+        const trimmed = line.trim();
+
+        if (/^\*\*(.+?)\*\*\s*$/.test(trimmed)) {
+          if (inSection) html += '</div>';
+          html += `<div class="r-section"><div class="r-heading">${trimmed.replace(/\*\*/g, '')}</div>`;
+          inSection = true;
+        } else if (trimmed.startsWith('—') && i >= lines.length - 4) {
+          if (inSection) { html += '</div>'; inSection = false; }
+          html += `<div class="r-footer">${trimmed}</div>`;
+        } else if (/^\d+\.\s/.test(trimmed)) {
+          html += `<div class="r-numbered">${trimmed}</div>`;
+        } else if (/^[-•]\s/.test(trimmed)) {
+          html += `<div class="r-bullet">${trimmed.replace(/^[-•]\s/, '')}</div>`;
+        } else if (trimmed) {
+          html += `<div class="r-para">${trimmed}</div>`;
+        }
+      }
+
+      if (inSection) html += '</div>';
+      return html;
     }
 
-    // ── Copy ──
     function copyReport() {
-      const text = document.getElementById('report-text').innerText;
-      navigator.clipboard.writeText(text).then(() => {
+      if (!lastGeneratedText) return;
+      navigator.clipboard.writeText(lastGeneratedText).then(() => {
         const btn = document.querySelector('.copy-btn');
         btn.textContent = 'Copied!';
         setTimeout(() => btn.textContent = 'Copy', 1800);
       });
     }
 
-    // ── Error banner ──
+    async function downloadDocx() {
+      if (!lastGeneratedText || typeof docx === 'undefined') return;
+
+      const clientName = document.getElementById('client-name').value.trim() || 'Client';
+      const agencyName = document.getElementById('agency-name').value.trim() || 'Agency';
+      const dateStr = new Date().toLocaleDateString('en-IN', { day: 'numeric', month: 'long', year: 'numeric' });
+      const toneLabel = document.querySelector('#tone-chips .chip.active').textContent;
+      const platformLabel = document.querySelector('#platform-chips .chip.active').textContent;
+
+      const {
+        Document, Packer, Paragraph, TextRun,
+        Header, Footer, BorderStyle, TabStopType, TabStopPosition
+      } = docx;
+
+      const ACCENT = 'C84B2F';
+      const INK    = '1A1814';
+      const MUTED  = '7A7468';
+      const RULE   = 'C8C2B4';
+
+      const children = [];
+
+      // Title block
+      children.push(
+        new Paragraph({
+          children: [new TextRun({ text: clientName, font: 'Georgia', size: 44, bold: true, color: INK })],
+          spacing: { before: 0, after: 120 }
+        }),
+        new Paragraph({
+          children: [new TextRun({ text: 'Campaign Performance Report', font: 'Arial', size: 26, color: MUTED })],
+          spacing: { before: 0, after: 100 }
+        }),
+        new Paragraph({
+          children: [
+            new TextRun({ text: `Prepared by ${agencyName}`, font: 'Arial', size: 20, color: MUTED }),
+            new TextRun({ text: '   ·   ', font: 'Arial', size: 20, color: RULE }),
+            new TextRun({ text: dateStr, font: 'Arial', size: 20, color: MUTED }),
+            new TextRun({ text: '   ·   ', font: 'Arial', size: 20, color: RULE }),
+            new TextRun({ text: `${platformLabel} · ${toneLabel}`, font: 'Arial', size: 20, color: MUTED }),
+          ],
+          spacing: { before: 0, after: 400 },
+          border: { bottom: { style: BorderStyle.SINGLE, size: 8, color: ACCENT, space: 1 } }
+        })
+      );
+
+      // Parse report body
+      const lines = lastGeneratedText.split('\n');
+      for (let i = 0; i < lines.length; i++) {
+        const trimmed = lines[i].trim();
+        if (!trimmed) {
+          children.push(new Paragraph({ spacing: { before: 0, after: 100 } }));
+          continue;
+        }
+
+        if (/^\*\*(.+?)\*\*\s*$/.test(trimmed)) {
+          children.push(new Paragraph({
+            children: [new TextRun({ text: trimmed.replace(/\*\*/g, ''), font: 'Georgia', size: 28, bold: true, color: INK })],
+            spacing: { before: 360, after: 140 },
+            border: { bottom: { style: BorderStyle.SINGLE, size: 4, color: RULE, space: 1 } }
+          }));
+        } else if (trimmed.startsWith('—') && i >= lines.length - 5) {
+          children.push(new Paragraph({
+            children: [new TextRun({ text: trimmed, font: 'Arial', size: 18, color: MUTED, italics: true })],
+            spacing: { before: 480, after: 0 },
+            border: { top: { style: BorderStyle.SINGLE, size: 4, color: RULE, space: 1 } }
+          }));
+        } else if (/^\d+\.\s/.test(trimmed)) {
+          children.push(new Paragraph({
+            children: [new TextRun({ text: trimmed, font: 'Arial', size: 22, color: INK })],
+            spacing: { before: 120, after: 80 },
+            indent: { left: 400 }
+          }));
+        } else if (/^[-•]\s/.test(trimmed)) {
+          children.push(new Paragraph({
+            children: [
+              new TextRun({ text: '— ', font: 'Arial', size: 22, color: ACCENT, bold: true }),
+              new TextRun({ text: trimmed.replace(/^[-•]\s/, ''), font: 'Arial', size: 22, color: INK })
+            ],
+            spacing: { before: 80, after: 80 },
+            indent: { left: 240 }
+          }));
+        } else {
+          children.push(new Paragraph({
+            children: [new TextRun({ text: trimmed, font: 'Arial', size: 22, color: INK })],
+            spacing: { before: 0, after: 180 }
+          }));
+        }
+      }
+
+      const doc = new Document({
+        sections: [{
+          properties: {
+            page: {
+              size: { width: 11906, height: 16838 },
+              margin: { top: 1440, right: 1440, bottom: 1440, left: 1440 }
+            }
+          },
+          headers: {
+            default: new Header({
+              children: [new Paragraph({
+                children: [
+                  new TextRun({ text: agencyName, font: 'Arial', size: 18, color: MUTED }),
+                  new TextRun({ text: '  ·  Campaign Report  ·  ' + clientName, font: 'Arial', size: 18, color: RULE }),
+                ],
+                border: { bottom: { style: BorderStyle.SINGLE, size: 4, color: RULE, space: 1 } },
+                spacing: { after: 0 }
+              })]
+            })
+          },
+          footers: {
+            default: new Footer({
+              children: [new Paragraph({
+                children: [
+                  new TextRun({ text: 'Generated by AgencyReport AI', font: 'Arial', size: 16, color: RULE }),
+                  new TextRun({ text: '\t', font: 'Arial', size: 16 }),
+                  new TextRun({ text: dateStr, font: 'Arial', size: 16, color: RULE }),
+                ],
+                tabStops: [{ type: TabStopType.RIGHT, position: TabStopPosition.MAX }],
+                border: { top: { style: BorderStyle.SINGLE, size: 4, color: RULE, space: 1 } }
+              })]
+            })
+          },
+          children
+        }]
+      });
+
+      const blob = await Packer.toBlob(doc);
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `${clientName.replace(/\s+/g, '_')}_Campaign_Report_${new Date().toISOString().slice(0,10)}.docx`;
+      a.click();
+      URL.revokeObjectURL(url);
+    }
+
     function showError(msg) {
       const banner = document.getElementById('error-banner');
       banner.textContent = msg;
       banner.style.display = 'block';
     }
 
-    // ── Enter key shortcut (Ctrl/Cmd + Enter) ──
     document.getElementById('raw-data').addEventListener('keydown', e => {
       if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') generateReport();
     });
