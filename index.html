@@ -427,7 +427,7 @@ Revenue: ₹38,640"></textarea>
   </footer>
 
   <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/docx@8.5.0/build/index.js"></script>
+  <script src="/js/docx.js"></script>
 
   <script>
     // ── State ──
@@ -874,7 +874,7 @@ NON-NEGOTIABLE RULES:
       const toneLabel    = document.querySelector('#tone-chips .chip.active').textContent;
       const platformLabel= document.querySelector('#platform-chips .chip.active').textContent;
 
-      const { Document, Packer, Paragraph, TextRun, Header, Footer, BorderStyle, TabStopType, TabStopPosition } = docx;
+      const { Document, Packer, Paragraph, TextRun, Header, Footer, BorderStyle, TabStopType, TabStopPosition } = docx.docx || docx;
       const ACCENT='C84B2F', INK='1A1814', MUTED='7A7468', RULE='C8C2B4';
       const children = [];
 
